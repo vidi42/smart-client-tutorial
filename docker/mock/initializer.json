@@ -1,0 +1,142 @@
+[
+  {
+    "httpRequest": {
+      "path": "/.well-known/openid-configuration"
+    },
+    "httpResponse": {
+      "body": {
+        "issuer": "http://localhost:7080/auth/realms/smart",
+        "jwks_uri": "http://localhost:7080/auth/realms/smart/protocol/openid-connect/certs",
+        "authorization_endpoint": "http://localhost:7080/auth/realms/smart/protocol/openid-connect/auth",
+        "token_endpoint": "http://localhost:7080/auth/realms/smart/protocol/openid-connect/token",
+        "services": {
+          "org.openehr.rest": {
+            "baseUrl": "http://localhost:1080/openehr/rest/v1",
+            "description": "The openEHR REST APIs baseUrl"
+          }
+        },
+        "token_endpoint_auth_methods_supported": [
+          "private_key_jwt",
+          "client_secret_basic",
+          "client_secret_post",
+          "tls_client_auth",
+          "client_secret_jwt"
+        ],
+        "grant_types_supported": [
+          "authorization_code",
+          "implicit",
+          "refresh_token",
+          "password",
+          "client_credentials",
+          "urn:openid:params:grant-type:ciba",
+          "urn:ietf:params:oauth:grant-type:device_code"
+        ],
+        "registration_endpoint": "http://localhost:7080/auth/realms/smart/clients-registrations/openid-connect",
+        "scopes_supported": [
+          "openid",
+          "roles",
+          "user/template-*.c",
+          "patient/template-*.r",
+          "profile",
+          "phone",
+          "microprofile-jwt",
+          "launch/patient",
+          "user/composition-*.u",
+          "patient/composition-*.c",
+          "offline_access",
+          "patient/composition-*.u",
+          "patient/composition-*.r",
+          "user/composition-*.c",
+          "user/template-*.u",
+          "acr",
+          "web-origins",
+          "user/composition-*.d",
+          "user/composition-*.crud",
+          "basic",
+          "user/template-*.d",
+          "user/template-*.r",
+          "address",
+          "patient/composition-*.d",
+          "user/composition-*.r",
+          "user/template-*.crud",
+          "email",
+          "patient/composition-*.crud"
+        ],
+        "response_types_supported": [
+          "code"
+        ],
+        "management_endpoint": "https://platform.example.com/user/manage",
+        "introspection_endpoint": "http://localhost:7080/auth/realms/smart/protocol/openid-connect/token/introspect",
+        "revocation_endpoint": "http://localhost:7080/auth/realms/smart/protocol/openid-connect/revoke",
+        "code_challenge_methods_supported": [
+          "S256"
+        ],
+        "capabilities": [
+          "launch-ehr",
+          "permission-patient",
+          "permission-v2",
+          "client-public",
+          "client-confidential-symmetric",
+          "context-ehr-patient",
+          "sso-openid-connect",
+          "context-openehr-ehr",
+          "openehr-permission-v1",
+          "launch-base64-json"
+        ],
+        "subject_types_supported": [
+          "public",
+          "pairwise"
+        ]
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "path": "/openehr/rest/v1/query/aql"
+    },
+    "httpResponse": {
+      "body": {
+        "meta": {
+          "_href": "http://localhost:1080/openehr/rest/v1/query/aql",
+          "_type": "RESULTSET",
+          "_schema_version": "1.0.3",
+          "_created": "2024-11-19T07:23:28.635414719Z",
+          "_executed_aql": "SELECT o/data/events/time/value, o/data/events/data/items[at0004]/value/magnitude as systolic, o/data/events/data/items[at0005]/value/magnitude as diastolic FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1] WHERE e/ehr_id/value='ab774a3d-daa8-4747-ba45-08e72b7bf9c9'",
+          "resultsize": 3
+        },
+        "q": "SELECT o/data/events/time/value, o/data/events/data/items[at0004]/value/magnitude as systolic, o/data/events/data/items[at0005]/value/magnitude as diastolic FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1] WHERE e/ehr_id/value=$ehrId",
+        "columns": [
+          {
+            "path": "o/data/events/time/value",
+            "name": "time"
+          },
+          {
+            "path": "o/data/events/data/items[at0004]/value/magnitude",
+            "name": "systolic"
+          },
+          {
+            "path": "o/data/events/data/items[at0005]/value/magnitude",
+            "name": "diastolic"
+          }
+        ],
+        "rows": [
+          [
+            "2022-02-03T09:05:06",
+            120,
+            75
+          ],
+          [
+            "2023-02-03T09:05:06",
+            125,
+            80
+          ],
+          [
+            "2024-02-03T09:05:06",
+            120,
+            80
+          ]
+        ]
+      }
+    }
+  }
+]
