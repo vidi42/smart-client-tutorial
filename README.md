@@ -27,5 +27,5 @@ that mimic the SMART endpoints and scopes (no patient selection step, the patien
 ## Mentions
 
 This tutorial app was inspired by the tutorials and videos of https://github.com/GinoCanessa 
-, documentation from [HL7 SMART App Launch] (https://www.hl7.org/fhir/smart-app-launch/)
+, documentation from [HL7 SMART App Launch](https://www.hl7.org/fhir/smart-app-launch/)
 and [SMART on openEHR](https://specifications.openehr.org/releases/ITS-REST/development/smart_app_launch.html) documentation.
