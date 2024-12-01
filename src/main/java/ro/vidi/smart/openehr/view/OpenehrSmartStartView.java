@@ -31,6 +31,11 @@ public class OpenehrSmartStartView extends AbstractSmartStartView<OpenehrClient>
     }
 
     @Override
+    protected String getWellKnownPath() {
+        return "/.well-known/smart-configuration";
+    }
+
+    @Override
     protected String getDefaultClientId() {
         return "smart-client";
     }

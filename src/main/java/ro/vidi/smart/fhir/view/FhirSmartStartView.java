@@ -80,13 +80,18 @@ public class FhirSmartStartView extends AbstractSmartStartView<FhirClient> {
     }
 
     @Override
+    protected String getWellKnownPath() {
+        return "/.well-known/openid-configuration";
+    }
+
+    @Override
     protected String getDefaultClientId() {
         return "smart-on-fhir-tutorial";
     }
 
     @Override
     protected String getDefaultClientSecret() {
-        return null;
+        return "";
     }
 
     @Override

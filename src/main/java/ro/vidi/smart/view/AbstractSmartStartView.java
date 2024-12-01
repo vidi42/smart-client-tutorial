@@ -76,7 +76,7 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
         discoverUsingOidcConfig = new Button("Discover URLs using OIDC Configuration");
         discoverUsingOidcConfig.addClickListener(event -> setSmartMetadata(smartServerUrl -> {
             try {
-                return oidcClient.getWellKnownInfo(smartServerUrl);
+                return oidcClient.getWellKnownInfo(smartServerUrl, getWellKnownPath());
             } catch (IOException | ParseException e) {
                 log.error(e.getMessage(), e);
                 ViewUtils.showNotificationError("Cannot build the state object. Check the logs.");
@@ -172,6 +172,8 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
                 authorizationUrlTextArea,
                 startButton);
     }
+
+    protected abstract String getWellKnownPath();
 
     protected abstract String getDefaultClientId();
 

@@ -11,7 +11,7 @@ See here for [FHIR](https://www.hl7.org/fhir/smart-app-launch/app-launch.html#la
 1. Clone the repository
 2. `./gradlew build`
 3. `./gradlew bootRun`
-4. Open http://localhost:8080 in the browser
+4. Open http://localhost:5050 in the browser
 5. Follow the flows in there
 
 ### Public test servers

@@ -3,6 +3,7 @@ package ro.vidi.smart;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.oauth2.sdk.AbstractConfigurationRequest;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationCodeGrant;
 import com.nimbusds.oauth2.sdk.AuthorizationGrant;
@@ -11,15 +12,13 @@ import com.nimbusds.oauth2.sdk.ResponseType;
 import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.TokenRequest;
 import com.nimbusds.oauth2.sdk.TokenResponse;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
+import com.nimbusds.oauth2.sdk.WellKnownPathComposeStrategy;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
-import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.id.State;
 import com.nimbusds.openid.connect.sdk.AuthenticationRequest;
 import com.nimbusds.openid.connect.sdk.OIDCTokenResponseParser;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderConfigurationRequest;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -104,12 +103,12 @@ public class OidcClient {
         return OIDCTokenResponseParser.parse(request.toHTTPRequest().send());
     }
 
-    public SmartMetadata getWellKnownInfo(String smartServerUrl) throws IOException, ParseException {
-        OIDCProviderConfigurationRequest oidcProviderConfigurationRequest =
-                new OIDCProviderConfigurationRequest(new Issuer(smartServerUrl));
+    public SmartMetadata getWellKnownInfo(String smartServerUrl, String wellKnownPath) throws IOException, ParseException {
+        SmartOIDCProviderConfigurationRequest smartOIDCProviderConfigurationRequest =
+                new SmartOIDCProviderConfigurationRequest(smartServerUrl, wellKnownPath);
         OIDCProviderMetadata parse =
                 OIDCProviderMetadata.parse(
-                        oidcProviderConfigurationRequest
+                        smartOIDCProviderConfigurationRequest
                                 .toHTTPRequest()
                                 .send()
                                 .getContentAsJSONObject());
@@ -121,4 +120,12 @@ public class OidcClient {
 
         return smartMetadata;
     }
+
+    static class SmartOIDCProviderConfigurationRequest extends AbstractConfigurationRequest {
+
+        public SmartOIDCProviderConfigurationRequest(String smartServerBaseUrl, String wellKnownPath) {
+            super(URI.create(smartServerBaseUrl), wellKnownPath, WellKnownPathComposeStrategy.POSTFIX);
+        }
+    }
+
 }
