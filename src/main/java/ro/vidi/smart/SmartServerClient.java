@@ -10,6 +10,8 @@ public interface SmartServerClient {
 
     String getDefaultSmartServerUrl();
 
+    String getDefaultClientId();
+
     SmartMetadata getSmartMetadata(String smartServerUrl);
 
     default AppState decodeState(String stateEncoded) throws IOException {

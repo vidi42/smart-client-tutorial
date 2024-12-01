@@ -85,11 +85,6 @@ public class FhirSmartStartView extends AbstractSmartStartView<FhirClient> {
     }
 
     @Override
-    protected String getDefaultClientId() {
-        return "smart-on-fhir-tutorial";
-    }
-
-    @Override
     protected String getDefaultClientSecret() {
         return "";
     }

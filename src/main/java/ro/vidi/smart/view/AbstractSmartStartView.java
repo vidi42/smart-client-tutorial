@@ -175,7 +175,9 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
 
     protected abstract String getWellKnownPath();
 
-    protected abstract String getDefaultClientId();
+    protected String getDefaultClientId() {
+        return smartServerClient.getDefaultClientId();
+    }
 
     protected abstract String getDefaultClientSecret();
 

@@ -2,6 +2,7 @@
 package ro.vidi.smart.openehr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -11,8 +12,13 @@ import ro.vidi.smart.SmartServerClient;
 @Component
 public class OpenehrClient implements SmartServerClient {
 
+    @Getter
     @Value("${smart.openehr.base.url}")
-    private String defaultOpenehrServerUrl;
+    private String defaultSmartServerUrl;
+
+    @Getter
+    @Value("${smart.openehr.client-id}")
+    private String defaultClientId;
 
     private final ObjectMapper mapper;
 
@@ -21,11 +27,6 @@ public class OpenehrClient implements SmartServerClient {
     public OpenehrClient(ObjectMapper mapper, RestClient.Builder restClientBuilder) {
         this.mapper = mapper;
         this.restClientBuilder = restClientBuilder;
-    }
-
-    @Override
-    public String getDefaultSmartServerUrl() {
-        return defaultOpenehrServerUrl;
     }
 
     @Override

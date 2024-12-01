@@ -36,11 +36,6 @@ public class OpenehrSmartStartView extends AbstractSmartStartView<OpenehrClient>
     }
 
     @Override
-    protected String getDefaultClientId() {
-        return "smart-client";
-    }
-
-    @Override
     protected String getDefaultClientSecret() {
         return "";
     }
@@ -52,7 +47,7 @@ public class OpenehrSmartStartView extends AbstractSmartStartView<OpenehrClient>
 
     @Override
     protected Set<String> getDefaultScopes() {
-        return new HashSet<>(Arrays.asList("openid", "launch/patient", "patient/aql-*.s"));
+        return new HashSet<>(Arrays.asList("openid", "launch/patient","patient/composition-*.crud", "user/aql-*.cruds"));
     }
 
     @Override

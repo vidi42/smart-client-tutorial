@@ -161,6 +161,8 @@ public abstract class AbstractSmartCallbackView<T extends SmartServerClient> ext
         QueryParameters queryParameters = location.getQueryParameters();
 
         queryParameters.getSingleParameter("code").ifPresent(authorizationCode::setValue);
+        queryParameters.getSingleParameter("error").ifPresent(authorizationCode::setValue);
+        queryParameters.getSingleParameter("error_description").ifPresent(errorDescription -> authorizationCode.setValue(authorizationCode.getValue() + "\n" + errorDescription));
         queryParameters.getSingleParameter("state").ifPresent(encodedState::setValue);
     }
 

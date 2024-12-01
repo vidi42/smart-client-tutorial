@@ -7,6 +7,7 @@ import ca.uhn.fhir.rest.annotation.Read;
 import ca.uhn.fhir.rest.client.api.IBasicClient;
 import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.hl7.fhir.r4.model.Extension;
@@ -22,8 +23,13 @@ import ro.vidi.smart.SmartServerClient;
 @Component
 public class FhirClient implements SmartServerClient {
 
+    @Getter
     @Value("${smart.fhir.base.url}")
-    private String defaultFhirServerUrl;
+    private String defaultSmartServerUrl;
+
+    @Getter
+    @Value("${smart.fhir.client-id}")
+    private String defaultClientId;
 
     private final ObjectMapper mapper;
 
@@ -31,10 +37,6 @@ public class FhirClient implements SmartServerClient {
         this.mapper = mapper;
     }
 
-    @Override
-    public String getDefaultSmartServerUrl() {
-        return defaultFhirServerUrl;
-    }
 
     public SmartMetadata getSmartMetadata(String smartServerUrl) {
         IBasicClient client =
