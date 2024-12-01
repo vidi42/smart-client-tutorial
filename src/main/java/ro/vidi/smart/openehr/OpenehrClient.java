@@ -39,12 +39,12 @@ public class OpenehrClient implements SmartServerClient {
         return mapper;
     }
 
-    public String getPatientData(String openehrServerUrl, String accessToken, String ehrId) {
+    public String getAqlResult(String openehrServerUrl, String aqlQuery, String accessToken, String ehrId) {
 
         RestClient restClient = restClientBuilder.baseUrl(openehrServerUrl).build();
         return restClient.get().uri(uriBuilder -> uriBuilder
                         .path("/query/aql")
-                        .queryParam("q", "SELECT o/data/events/time/value, o/data/events/data/items[at0004]/value/magnitude as systolic, o/data/events/data/items[at0005]/value/magnitude as diastolic FROM EHR e CONTAINS COMPOSITION c CONTAINS OBSERVATION o[openEHR-EHR-OBSERVATION.blood_pressure.v1] WHERE e/ehr_id/value=$ehrId")
+                        .queryParam("q", aqlQuery)
                         .queryParam("query_parameters", "ehrId=" + ehrId)
                         .build())
                 .header("Authorization", "Bearer " + accessToken)
