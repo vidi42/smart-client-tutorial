@@ -38,7 +38,8 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
     private final T smartServerClient;
     private final OidcClient oidcClient;
 
-    private final TextArea smartServerUrlTextArea;
+    private final TextField smartServerUrlTextField;
+    private final TextField smartDiscoveryEndpointTextField;
     private final Button discoverUsingOidcConfig;
     @Getter
     private final HorizontalLayout smartMetadatDiscoverLayout;
@@ -58,22 +59,36 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
         this.smartServerClient = smartServerClient;
         this.oidcClient = oidcClient;
 
-        smartServerUrlTextArea = new TextArea(getSmartServerLabelText());
-        smartServerUrlTextArea.setWidth("100%");
-        smartServerUrlTextArea.setRequired(true);
-        smartServerUrlTextArea.addValueChangeListener(
-                event -> enableDiscoverMetadataButtons(isValidURL(event.getValue())));
-        smartServerUrlTextArea.setHelperComponent(getSmartServerHelpText());
+        smartServerUrlTextField = new TextField(getSmartServerLabelText());
+        smartServerUrlTextField.setWidth("100%");
+        smartServerUrlTextField.setRequired(true);
+        smartServerUrlTextField.setHelperComponent(getSmartServerHelpText());
 
-        Button defaultFhirServerUrlButton = new Button("Use default");
-        defaultFhirServerUrlButton.addClickListener(
-                event -> smartServerUrlTextArea.setValue(smartServerClient.getDefaultSmartServerUrl()));
+        Button defaultSmartServerUrlButton = new Button("Use default");
+        defaultSmartServerUrlButton.addClickListener(
+                event -> smartServerUrlTextField.setValue(smartServerClient.getDefaultSmartServerUrl()));
 
-        HorizontalLayout smartServerUrlDiscoverLayout = new HorizontalLayout(smartServerUrlTextArea, defaultFhirServerUrlButton);
+        HorizontalLayout smartServerUrlDiscoverLayout = new HorizontalLayout(smartServerUrlTextField, defaultSmartServerUrlButton);
         smartServerUrlDiscoverLayout.setWidth("100%");
         smartServerUrlDiscoverLayout.setVerticalComponentAlignment(
-                Alignment.CENTER, defaultFhirServerUrlButton);
+                Alignment.END, defaultSmartServerUrlButton);
+
+        smartDiscoveryEndpointTextField = new TextField("SMART Discovery Endpoint");
+        smartDiscoveryEndpointTextField.setReadOnly(true);
+        smartDiscoveryEndpointTextField.setWidth("100%");
+        smartServerUrlTextField.addValueChangeListener(
+                event -> {
+                    enableDiscoverMetadataButtons(isValidURL(event.getValue()));
+                    if (StringUtils.isBlank(event.getValue())) {
+                        smartDiscoveryEndpointTextField.setValue(smartDiscoveryEndpointTextField.getEmptyValue());
+                    } else {
+                        smartDiscoveryEndpointTextField.setValue(event.getValue() + getWellKnownPath());
+                    }
+                });
+
+
         discoverUsingOidcConfig = new Button("Discover URLs using OIDC Configuration");
+        discoverUsingOidcConfig.setEnabled(false);
         discoverUsingOidcConfig.addClickListener(event -> setSmartMetadata(smartServerUrl -> {
             try {
                 return oidcClient.getWellKnownInfo(smartServerUrl, getWellKnownPath());
@@ -166,6 +181,7 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
                 new H1(viewName),
                 new Text(viewDescription),
                 smartServerUrlDiscoverLayout,
+                smartDiscoveryEndpointTextField,
                 smartMetadatDiscoverLayout,
                 metadataAccordion,
                 parametersLayout,
@@ -186,7 +202,7 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
     }
 
     protected void setSmartMetadata(Function<String, SmartMetadata> obtainSmartMetadata) {
-        var smartServerUrl = smartServerUrlTextArea.getValue();
+        var smartServerUrl = StringUtils.trim(smartServerUrlTextField.getValue());
 
         if (StringUtils.isBlank(smartServerUrl)) {
             return;
@@ -217,10 +233,10 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
     private void changeAuthorizationUrl() {
         if (authorizationUrlTextArea != null
                 && StringUtils.isNoneBlank(
-                smartServerUrlTextArea.getValue(), clientIdTextField.getValue())
+                smartServerUrlTextField.getValue(), clientIdTextField.getValue())
                 && !CollectionUtils.isEmpty(scopesMultiSelectComboBox.getValue())) {
             try {
-                authorizationUrlTextArea.setValue(getAuthorizationUrl(smartServerUrlTextArea.getValue()));
+                authorizationUrlTextArea.setValue(getAuthorizationUrl(smartServerUrlTextField.getValue()));
             } catch (URISyntaxException | JsonProcessingException e) {
                 log.error(e.getMessage(), e);
                 ViewUtils.showNotificationError("Failed to build authorization URL. Check the logs.");
@@ -252,6 +268,10 @@ public abstract class AbstractSmartStartView<T extends SmartServerClient> extend
     }
 
     public boolean isValidURL(String url) {
+        if (StringUtils.isBlank(url)) {
+            return false;
+        }
+
         try {
             new URL(url).toURI();
             return true;
